@@ -1,0 +1,20 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.pagination button {
+    margin: 0 15px;
+    cursor: pointer;
+}
+
+.loading-spinner {
+    color: rgb(0, 255, 30);
+    font-size: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+
+}

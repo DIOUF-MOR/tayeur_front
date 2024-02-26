@@ -1,0 +1,47 @@
+.example-stretched-tabs {
+    max-width: 800px;
+}
+
+mat-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+mat-card-content span {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: black;
+}
+
+mat-card-content div {
+    display: flex;
+    /* align-items: center; */
+    font-size: 0.7rem;
+    font-weight: normal;
+    padding: 0;
+    gap: 1rem;
+}
+
+mat-card {
+    position: relative;
+    width: 500px;
+    height: 600px;
+    /* top: 30px; */
+}
+
+span {
+    display: flex;
+    justify-content: start;
+}
+
+.box-card {
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+    width: 40%;
+    height: 70%;
+    border: 0.1rem solid #F16E00;
+}
+
+.inputMesures {
+    border: #F16E00;
+}

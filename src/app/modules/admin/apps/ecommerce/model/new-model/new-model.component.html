@@ -1,0 +1,84 @@
+<div class="flex flex-col w-full model h-400">
+
+    <!-- View mode -->
+    <ng-container class="h-100">
+        <div class="relative w-full h-40 sm:h-48 px-8 sm:px-12 bg-accent-100 dark:bg-accent-700">
+            <!-- Background -->
+            <ng-container>
+                <img class="absolute inset-0 object-cover h-40" [src]="selectedImage"
+                    alt="./assets/images/logo/IMG_5177.png">
+            </ng-container>
+            <!-- Close button -->
+            <div class="flex items-center justify-end w-full max-w-3xl mx-auto pt-6">
+                <a mat-icon-button [matTooltip]="'Close'" [routerLink]="['../']">
+                    <mat-icon class="text-white" [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+                </a>
+            </div>
+        </div>
+        <div class="relative flex items-center p-6 pt-2 h-100">
+            <div class="relative w-50 h-90 mt-1 px-8 bg-accent-100 dark:bg-accent-700 rounded-md shadow-md">
+                <img class="absolute inset-0 object-cover w-full h-full rounded-md shadow-md" [src]="selectedImage">
+
+            </div>
+            <div class="relative flex flex-col ml-auto ">
+                <div class="w-80 max-w-3xl  h-80 p-8 bg-accent-100 dark:bg-accent-700 rounded-md shadow-md">
+                    <ng-container>
+                        <div class="mb-6 text-4xl font-bold truncate">
+                            <div class="w-auto pl-2 flex flex-col custom-file-upload">
+                                <label for="file-input" class="flex sm:items-center">Sélectionner l'image
+                                    <mat-icon svgIcon="heroicons_outline:camera" class="ml-auto"></mat-icon>
+                                </label>
+                                <input id="file-input" type="file" (change)="onFileSelected($event)"
+                                    [formControl]="selectedProductForm.get('image')">
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container>
+                        <div class="mt-1 text-4xl font-bold truncate">
+                            <mat-form-field class="w-auto pl-2 flex items-center flex flex-col">
+                                <mat-label>Nom du model</mat-label>
+                                <input class="inputMesures " matInput [formControl]="selectedProductForm.get('nom')">
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+                    <ng-container>
+                        <div class="mt-1 text-4xl font-bold truncate">
+                            <mat-form-field class="w-auto pl-2 flex items-center flex flex-col">
+                                <mat-label>Type Model</mat-label>
+                                <mat-select [formControl]="selectedProductForm.get('type')">
+                                    <ng-container *ngFor="let brand of tabModel">
+                                        <mat-option [value]="brand.name">
+                                            {{brand.name}}
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container>
+
+        <div class="flex items-center justify-between w-full border-t px-8 py-4">
+            <a mat-icon-button [matTooltip]="'Close'" [routerLink]="['../']">
+                <button class="-ml-4" mat-button [color]="'warn'">
+                    Annuler
+                </button>
+            </a>
+            <div class="flex items-center">
+                <button *ngIf="updated" mat-flat-button [color]="'primary'" (click)="onFileSelectedSave()"
+                    [matTooltip]="'Close'" [routerLink]="['../']">
+                    Eregistrer
+                </button>
+                <button *ngIf="!updated" mat-flat-button [color]="'primary'" (click)="updateModel()"
+                    [matTooltip]="'Close'" [routerLink]="['../']">
+                    update
+                </button>
+            </div>
+        </div>
+    </ng-container>
+
+</div>

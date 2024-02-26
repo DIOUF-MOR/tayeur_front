@@ -1,0 +1,42 @@
+.custom-file-upload {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.custom-file-upload input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    /* Ajustez la taille de la police selon vos besoins */
+    cursor: pointer;
+    opacity: 0;
+}
+
+.custom-file-upload label {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    /* Ajustez la taille de la police selon vos besoins */
+    font-weight: bold;
+    background-color: transparent;
+    /* Couleur du bouton - ajustez selon vos besoins */
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.custom-file-upload label:hover {
+    background-color: #95a1aa;
+    /* Couleur au survol - ajustez selon vos besoins */
+}
+
+/* Style pour l'affichage du nom du fichier sélectionné */
+.file-name {
+    margin-top: 10px;
+    font-style: italic;
+    color: #888;
+}

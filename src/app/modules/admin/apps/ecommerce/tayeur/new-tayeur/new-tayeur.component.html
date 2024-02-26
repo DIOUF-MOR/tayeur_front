@@ -1,0 +1,66 @@
+<div class="flex flex-col w-full">
+
+  <!-- View mode -->
+  <ng-container *ngIf="!editMode">
+
+    <!-- Header -->
+    <div class="relative w-full h-40 sm:h-48 px-8 sm:px-12 bg-accent-100 dark:bg-accent-700">
+      <!-- Background -->
+      <ng-container>
+        <img class="absolute inset-0 object-cover monIm" src="assets/images/logo/IMG_5177.png"
+          alt="./assets/images/logo/IMG_5177.png">
+      </ng-container>
+      <!-- Close button -->
+      <div class="flex items-center justify-end w-full max-w-3xl mx-auto pt-6">
+        <a mat-icon-button [matTooltip]="'Close'" [routerLink]="['../']">
+          <mat-icon class="text-white" [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div class="relative flex flex-col flex-auto items-center p-6 pt-0 sm:p-12 sm:pt-0">
+      <div class="w-full max-w-3xl">
+        <mat-form-field class="w-auto pl-2 flex items-center flex flex-col">
+          <mat-label>Prenon</mat-label>
+          <input class="inputMesures " matInput [formControl]="selectedProductForm.get('preNom')">
+        </mat-form-field>
+        <mat-form-field class="w-auto pl-2 flex items-center flex flex-col">
+          <mat-label>Nom</mat-label>
+          <input class="inputMesures " matInput [formControl]="selectedProductForm.get('nom')">
+        </mat-form-field>
+        <mat-form-field class="w-auto pl-2 flex items-center flex flex-col">
+          <mat-label>N° téléphone</mat-label>
+          <input class="inputMesures" matInput [formControl]="selectedProductForm.get('telephone')">
+        </mat-form-field>
+        <mat-form-field class="w-auto pl-2 flex items-center flex flex-col">
+          <mat-label>Email</mat-label>
+          <input class="inputMesures" matInput [formControl]="selectedProductForm.get('email')">
+        </mat-form-field>
+        <mat-form-field class="w-auto pl-2 flex items-center flex flex-col">
+          <mat-label>Password</mat-label>
+          <input class="inputMesures" matInput [formControl]="selectedProductForm.get('password')">
+        </mat-form-field>
+      </div>
+      <div class="flex items-center justify-between w-full border-t px-8 py-4">
+        <a mat-icon-button [matTooltip]="'Close'" [routerLink]="['../']">
+          <button class="-ml-4" mat-button [color]="'warn'">
+            Annuler
+          </button>
+        </a>
+        <div class="flex items-center">
+          <button *ngIf="updated" mat-flat-button [color]="'primary'" (click)="saveTayeur()" [matTooltip]="'Close'"
+            [routerLink]="['../']">
+            Eregistrer
+          </button>
+          <button *ngIf="!updated" mat-flat-button [color]="'primary'" (click)="updateTayeur()" [matTooltip]="'Close'"
+            [routerLink]="['../']">
+            update
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+
+</div>

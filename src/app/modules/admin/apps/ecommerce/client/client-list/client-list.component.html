@@ -1,0 +1,367 @@
+<div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+
+  <mat-drawer-container class="flex-auto h-full bg-card dark:bg-transparent" (backdropClick)="onBackdropClicked()">
+
+    <!-- Drawer -->
+    <mat-drawer class="w-full md:w-160 dark:bg-gray-900" [mode]="drawerMode" [opened]="false" [position]="'end'"
+      [disableClose]="true" #matDrawer>
+      <router-outlet></router-outlet>
+    </mat-drawer>
+
+    <mat-drawer-content class="flex flex-col">
+
+      <!-- Main -->
+      <div class="flex-auto">
+
+        <!-- Header -->
+        <div
+          class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+          <!-- Loader -->
+          <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+          </div>
+          <!-- Title -->
+          <div class="text-4xl font-extrabold tracking-tight">List Clients</div>
+          <!-- Actions -->
+          <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <!-- Search -->
+            <mat-form-field class="fuse-mat-dense fuse-mat-rounded min-w-64" [subscriptSizing]="'dynamic'">
+              <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:magnifying-glass'"></mat-icon>
+              <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
+                [placeholder]="'Search demandes'">
+            </mat-form-field>
+            <!-- Add product button -->
+            <button class="ml-4" mat-flat-button [color]="'primary'" (click)="createContact()">
+              <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+              <span class=" ml-2 mr-1">new client</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Contacts list -->
+        <div class="relative">
+          <ng-container *ngIf="(clients$ | async) as products">
+            <ng-container *ngIf="products.length > 0; else noProducts">
+              <div class="grid">
+                <!-- Header -->
+                <div
+                  class="inventory-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                  matSort matSortDisableClear>
+                  <div class="hidden md:block" [mat-sort-header]="'image'">Nom</div>
+                  <div class="hidden md:block" [mat-sort-header]="'etat'">
+                    Telelphone
+                  </div>
+                  <!-- <div [mat-sort-header]="'name'">Commander le</div>
+                        <div [mat-sort-header]="'name'">A livrer avant</div>
+                        <div class="hidden sm:block" [mat-sort-header]="'price'">
+                          Prix
+                        </div> -->
+                  <div class="hidden lg:block" [mat-sort-header]="'stock'">
+                    Email
+                  </div>
+                  <!-- <div class="hidden lg:block" [mat-sort-header]="'active'">
+                                        Active
+                                    </div> -->
+                  <div class="hidden sm:block">Details</div>
+                </div>
+                <!-- Rows -->
+                <ng-container *ngIf="clients$ | async as products">
+                  <ng-container *ngFor="let product of products; trackBy: trackByFn">
+                    <div class="inventory-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+
+
+
+                      <!-- SKU -->
+                      <div class=" hidden md:block truncate">
+                        {{product?.nomComplet}}
+                      </div>
+
+                      <!-- Date de création -->
+                      <div class="truncate">
+                        {{product?.telephone}}
+                      </div>
+
+
+                      <!-- Stock -->
+                      <div class="hidden lg:flex items-center">
+                        <div class="min-w-4 truncate">{{product?.email}}</div>
+                        <!-- Low stock -->
+                        <!-- <div class="flex items-end ml-2 w-1 h-4 bg-red-200 rounded overflow-hidden"
+                                *ngIf="product?.montantVersse == 0">
+                                <div class="flex w-full h-1/3 bg-red-600"></div>
+                              </div> -->
+                        <!-- Medium stock -->
+                        <!-- <div class="flex items-end ml-2 w-1 h-4 bg-orange-200 rounded overflow-hidden"
+                                *ngIf="product?.montantVersse > 0 && product.montantVersse < product?.prix">
+                                <div class="flex w-full h-2/4 bg-orange-400"></div>
+                              </div> -->
+                        <!-- High stock -->
+                        <!-- <div class="flex items-end ml-2 w-1 h-4 bg-green-100 rounded overflow-hidden"
+                                *ngIf="product?.montantVersse > 0 && product?.montantVersse == product?.prix">
+                                <div class="flex w-full h-full bg-green-400"></div>
+                              </div> -->
+                      </div>
+
+                      <!-- Active -->
+                      <!-- <div class="hidden lg:block">
+                                                <ng-container *ngIf="product?.active">
+                                                    <mat-icon class="text-green-400 icon-size-5"
+                                                        [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                                                </ng-container>
+                                                <ng-container *ngIf="!product?.active">
+                                                    <mat-icon class="text-gray-400 icon-size-5"
+                                                        [svgIcon]="'heroicons_solid:x-mark'"></mat-icon>
+                                                </ng-container>
+                                            </div> -->
+
+                      <!-- Details button -->
+                      <div>
+                        <button class="min-w-10 min-h-7 h-7 px-2 leading-6 " mat-stroked-button
+                          (click)="toggleDetails(product.id)">
+                          <mat-icon class="icon-size-5"
+                            [svgIcon]="selectedCommande?.id === product.id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="grid">
+                      <ng-container *ngIf="selectedCommande?.id === product.id">
+                        <ng-container
+                          *ngTemplateOutlet="rowDetailsTemplate; context: {$implicit: product}"></ng-container>
+                      </ng-container>
+                    </div>
+                  </ng-container>
+                </ng-container>
+              </div>
+
+              <!-- <mat-paginator
+                                class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                                [ngClass]="{'pointer-events-none': isLoading}" [length]="products.length"
+                                [pageIndex]="pagination.page" [pageSize]="pagination.size" [pageSizeOptions]="[5, 10, 25, 100]"
+                                [showFirstLastButtons]="true"></mat-paginator> -->
+
+            </ng-container>
+          </ng-container>
+
+          <ng-template #rowDetailsTemplate let-product>
+            <div class="shadow-lg overflow-hidden">
+              <div class="flex border-b">
+                <!-- Selected product form -->
+                <form class="flex flex-col w-full" [formGroup]="selectedProductForm">
+
+                  <div class="flex flex-col sm:flex-row p-8">
+
+                    <!-- Product images and status -->
+                    <div class="flex flex-col items-center sm:items-start mb-8 sm:mb-0">
+                      <div class="flex flex-col items-center">
+                        <div class="w-32 h-44 border rounded overflow-hidden">
+                          <ng-container *ngIf="selectedProductForm.get('modelDto'); else noImage">
+                            <img class="w-full h-full object-cover" alt="image" [src]="product.modelDto.image">
+                          </ng-container>
+                          <ng-template #noImage>
+                            <span class="flex items-center min-h-20 text-lg font-semibold">NO
+                              IMAGE</span>
+                          </ng-template>
+                        </div>
+                        <div class="flex items-center mt-2 whitespace-nowrap"
+                          *ngIf="selectedProductForm.get('images')?.value?.length">
+                          <button mat-icon-button (click)="cycleImages(false)">
+                            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_mini:arrow-long-left'"></mat-icon>
+                          </button>
+                          <span class="font-sm mx-2">
+                            {{selectedProductForm.get('currentImageIndex').value + 1}} of
+                            {{selectedProductForm.get('images').value.length}}
+                          </span>
+                          <button mat-icon-button (click)="cycleImages(true)">
+                            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_mini:arrow-long-right'"></mat-icon>
+                          </button>
+                        </div>
+                      </div>
+                      <!-- <div class="flex flex-col mt-8">
+                                                <span class="font-semibold mb-2">Commande status</span>
+                                                <mat-slide-toggle [formControlName]="'active'" [color]="'primary'">
+                                                    {{selectedProductForm.get('active').value === true ? 'Active' : 'Disabled'}}
+                                                </mat-slide-toggle>
+                                            </div> -->
+                    </div>
+
+                    <div class="flex flex-auto flex-wrap">
+                      <!-- Name, SKU & etc. -->
+                      <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
+                        <mat-card class="px-2 my-2">
+                          <mat-label>Mesure Details</mat-label>
+                          <mat-card-content class="grid grid-cols-4 border rounded content shadow-lg p-2 mt-1">
+                            <mat-form-field class="w-auto pl-2 flex items-center flex flex-col">
+                              <mat-label>Coup</mat-label>
+                              <span matSuffix>Cm</span>
+                              <input class="inputMesures " matInput
+                                [formControl]="selectedProductForm.get('clientDto').get('mesureDto').get('coup')">
+                            </mat-form-field>
+                            <mat-form-field class="w-auto pl-2 flex items-center flex flex-col">
+                              <mat-label>Longueur</mat-label>
+                              <span matSuffix>Cm</span>
+                              <input class="inputMesures" matInput
+                                [formControl]="selectedProductForm.get('clientDto').get('mesureDto').get('longueur')">
+                            </mat-form-field>
+                            <mat-form-field class="w-auto pl-2 flex items-center flex flex-col">
+                              <mat-label>Epaul</mat-label>
+                              <span matSuffix>Cm</span>
+                              <input class="inputMesures" matInput
+                                [formControl]="selectedProductForm.get('clientDto').get('mesureDto').get('epaul')">
+                            </mat-form-field>
+                            <mat-form-field class="w-auto pl-2 flex items-center flex flex-col">
+                              <mat-label>Ceinture:</mat-label>
+                              <span matSuffix>Cm</span>
+                              <input class="inputMesures" matInput
+                                [formControl]="selectedProductForm.get('clientDto').get('mesureDto').get('ceinture')">
+                            </mat-form-field>
+                            <mat-form-field class="w-auto pl-2 flex items-center flex flex-col">
+                              <mat-label>Poitrine:</mat-label>
+                              <span matSuffix>Cm</span>
+                              <input class="inputMesures" matInput
+                                [formControl]="selectedProductForm.get('clientDto').get('mesureDto').get('poitrine')">
+                            </mat-form-field>
+                            <mat-form-field class="w-auto pl-2 flex items-center flex flex-col">
+                              <mat-label>Fesse:</mat-label>
+                              <span matSuffix>Cm</span>
+                              <input class="inputMesures" matInput
+                                [formControl]="selectedProductForm.get('clientDto').get('mesureDto').get('fesse')">
+                            </mat-form-field>
+                            <mat-form-field class="w-auto pl-2 flex items-center flex flex-col">
+                              <mat-label>Hanche:</mat-label>
+                              <span matSuffix>Cm</span>
+                              <input class="inputMesures" matInput
+                                [formControl]="selectedProductForm.get('clientDto').get('mesureDto').get('anche')">
+                            </mat-form-field>
+                            <mat-form-field class="w-auto pl-2 flex items-center flex flex-col">
+                              <mat-label>Bras:</mat-label>
+                              <span matSuffix>Cm</span>
+                              <input class="inputMesures" matInput
+                                [formControl]="selectedProductForm.get('clientDto').get('mesureDto').get('bras')">
+                            </mat-form-field>
+                            <mat-form-field class="w-auto pl-2 flex items-center flex flex-col">
+                              <mat-label>Patte:</mat-label>
+                              <span matSuffix>Cm</span>
+                              <input class="inputMesures" matInput
+                                [formControl]="selectedProductForm.get('clientDto').get('mesureDto').get('pate')">
+                            </mat-form-field>
+                          </mat-card-content>
+                        </mat-card>
+                        <div class="flex">
+                          <mat-form-field class="w-1/3 pr-2">
+                            <mat-label>Tayeur</mat-label>
+                            <input matInput [formControl]="selectedProductForm.get('tayeurDto').get('nomComplet')">
+                          </mat-form-field>
+                          <mat-form-field class="w-1/3 pl-2">
+                            <mat-label>Model</mat-label>
+                            <input matInput [formControl]="selectedProductForm.get('modelDto').get('nom')">
+                          </mat-form-field>
+                        </div>
+                      </div>
+                      <div class="flex flex-col w-full lg:w-1/4 sm:pl-8">
+                        <mat-form-field class="w-full">
+                          <mat-label>Date de creation</mat-label>
+                          <span matPrefix></span>
+                          <input matInput [formControlName]="'dateCreation'">
+                        </mat-form-field>
+                        <mat-form-field class="w-full">
+                          <mat-label>Delais</mat-label>
+                          <span matPrefix></span>
+                          <input matInput [formControlName]="'delais'">
+                        </mat-form-field>
+                        <mat-form-field class="w-full">
+                          <mat-label>Montant Versse</mat-label>
+                          <span matSuffix>FCFA</span>
+                          <input matInput [formControlName]="'montantVersse'">
+                        </mat-form-field>
+                        <mat-form-field class="w-full">
+                          <mat-label>Prix</mat-label>
+                          <span matSuffix>FCFA</span>
+                          <input matInput [formControlName]="'prix'">
+                        </mat-form-field>
+                      </div>
+                      <div class="flex flex-col w-full lg:w-1/4 sm:pl-8">
+                        <mat-form-field class="w-full h-20 ">
+                          <mat-label>Tayeur</mat-label>
+                          <mat-select [formControl]="selectedProductForm.get('tayeurDto').get('nomComplet')">
+                            <ng-container *ngFor="let tayeur of tayeurs">
+                              <mat-option [value]="tayeur">
+                                {{tayeur?.nomComplet}}
+                              </mat-option>
+                            </ng-container>
+                          </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="w-full h-20 ">
+                          <mat-label>Model</mat-label>
+                          <mat-select [formControl]="selectedProductForm.get('modelDto').get('image')">
+                            <ng-container *ngFor="let model of models">
+                              <mat-option [value]="model.image" (change)="choiModel(model.image)">
+                                <ng-container>
+                                  <img class="w-full h-full object-cover" alt="image" [src]="model?.image">
+                                </ng-container>
+                              </mat-option>
+                            </ng-container>
+                          </mat-select>
+                        </mat-form-field>
+
+                      </div>
+                      <!-- Weight & Tags -->
+                      <!-- <div class="flex flex-col w-full lg:w-1/4 sm:pl-8">
+                                                <mat-form-field class="w-full">
+                                                    <mat-label>Weight</mat-label>
+                                                    <span matSuffix>lbs.</span>
+                                                    <input matInput [formControlName]="'weight'">
+                                                </mat-form-field> -->
+
+                      <!-- Tags -->
+
+
+                      <!-- </div> -->
+
+                    </div>
+                    <!-- mesure-list.component.html -->
+
+
+
+
+                  </div>
+
+                  <div class="flex items-center justify-between w-full border-t px-8 py-4">
+                    <button class="-ml-4" mat-button [color]="'warn'" (click)="deleteSelectedProduct()">
+                      Delete
+                    </button>
+                    <div class="flex items-center">
+                      <div class="flex items-center mr-4" *ngIf="flashMessage">
+                        <ng-container *ngIf="flashMessage === 'success'">
+                          <mat-icon class="text-green-500" [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                          <span class="ml-2">Product updated</span>
+                        </ng-container>
+                        <ng-container *ngIf="flashMessage === 'error'">
+                          <mat-icon class="text-red-500" [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+                          <span class="ml-2">An error occurred, try again!</span>
+                        </ng-container>
+                      </div>
+                      <button mat-flat-button [color]="'primary'" (click)="updateSelectedCommande()">
+                        Update
+                      </button>
+                    </div>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </ng-template>
+
+          <ng-template #noProducts>
+            <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no
+              tayeur</div>
+          </ng-template>
+
+        </div>
+
+      </div>
+
+    </mat-drawer-content>
+
+  </mat-drawer-container>
+
+</div>

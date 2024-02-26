@@ -1,0 +1,140 @@
+<div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+
+  <mat-drawer-container class="flex-auto h-full bg-card dark:bg-transparent" (backdropClick)="onBackdropClicked()">
+
+    <!-- Drawer -->
+    <mat-drawer class="w-full md:w-160 dark:bg-gray-900" [mode]="drawerMode" [opened]="false" [position]="'end'"
+      [disableClose]="true" #matDrawer>
+      <router-outlet></router-outlet>
+    </mat-drawer>
+
+    <mat-drawer-content class="flex flex-col">
+
+      <!-- Main -->
+      <div class="flex-auto">
+
+        <!-- Header -->
+        <div
+          class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+          <!-- Loader -->
+          <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+          </div>
+          <!-- Title -->
+          <div class="text-4xl font-extrabold tracking-tight">List Tayeurs</div>
+          <!-- Actions -->
+          <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <!-- Search -->
+            <mat-form-field class="fuse-mat-dense fuse-mat-rounded min-w-64" [subscriptSizing]="'dynamic'">
+              <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:magnifying-glass'"></mat-icon>
+              <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
+                [placeholder]="'Search demandes'">
+            </mat-form-field>
+            <!-- Add product button -->
+            <button class="ml-4" mat-flat-button [color]="'primary'" (click)="createContact()">
+              <span class=" ml-2 mr-1">new tayeur</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Contacts list -->
+        <div class="relative">
+          <ng-container *ngIf="(tayeurs$ | async) as products">
+            <div class="grid">
+              <!-- Header -->
+              <div
+                class="inventory-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                matSort matSortDisableClear>
+                <div [mat-sort-header]="'preNom'"></div>
+                <!-- <div [mat-sort-header]="'preNom'"></div> -->
+                <div [mat-sort-header]="'preNom'" class="hidden md:block">Prénom</div>
+                <div class="hidden md:block" [mat-sort-header]="'nom'">Nom</div>
+                <div class="hidden md:block" [mat-sort-header]="'telephone'">
+                  Telelphone
+                </div>
+                <!-- <div [mat-sort-header]="'name'"></div> -->
+                <!-- <div class="hidden lg:block" [mat-sort-header]="'email'">
+                  Email
+                </div> -->
+                <div class="hidden sm:block" [mat-sort-header]="'prix'">Stock
+
+                </div>
+                <div class="hidden lg:block" [mat-sort-header]="'active'">
+                  Active
+                </div>
+                <div class="hidden sm:block">Details</div>
+              </div>
+              <!-- Rows -->
+              <ng-container *ngIf="tayeurs$ | async as products">
+                <ng-container *ngIf="products.length; else noProducts">
+                  <ng-container *ngFor="let product of products; let i = index; trackBy: trackByFn">
+                    <!-- Group -->
+                    <ng-container *ngIf="i === 0 || product?.preNom.charAt(0) !== products[i - 1]?.preNom.charAt(0)">
+                      <div
+                        class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
+                        {{product?.preNom.charAt(0)}}
+                      </div>
+                    </ng-container>
+
+                    <div class="inventory-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+                      <!-- SKU -->
+                      <div class="truncate"></div>
+                      <div class=" hidden md:block ">{{product?.preNom}}</div>
+                      <div class="truncate">{{product?.nom}}</div>
+                      <div class="truncate">{{product?.telephone}}</div>
+                      <!-- Date de création -->
+
+                      <!-- Stock -->
+                      <div class="hidden lg:flex items-center ">
+                        <div class="min-w-4 truncate">{{product?.nombreCommandes}}</div>
+                      </div>
+
+                      <!-- Active -->
+                      <div class="hidden lg:block">
+                        <ng-container *ngIf="product?.nom">
+                          <mat-icon class="text-green-400 icon-size-5" [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="!product?.nom">
+                          <mat-icon class="text-gray-400 icon-size-5" [svgIcon]="'heroicons_solid:x-mark'"></mat-icon>
+                        </ng-container>
+                      </div>
+
+                      <!-- Details button -->
+                      <!-- <div class="truncate"> {{product?.nombreCommandes}}</div> -->
+                      <div>
+                        <a class="z-20 " [routerLink]="['./', product.id]">
+                          <button class="min-w-10 min-h-7 h-7 px-2 leading-6 " mat-stroked-button>
+                            <mat-icon class="icon-size-5"
+                              [svgIcon]="selectedTayeur?.id === product.id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
+                          </button>
+                        </a>
+                      </div>
+                    </div>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </div>
+
+            <!-- <mat-paginator
+                                class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                                [ngClass]="{'pointer-events-none': isLoading}" [length]="products.length"
+                                [pageIndex]="pagination.page" [pageSize]="pagination.size" [pageSizeOptions]="[5, 10, 25, 100]"
+                                [showFirstLastButtons]="true"></mat-paginator> -->
+
+
+          </ng-container>
+
+          <ng-template #noProducts>
+            <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no
+              tayeur</div>
+          </ng-template>
+
+        </div>
+
+      </div>
+
+    </mat-drawer-content>
+
+  </mat-drawer-container>
+
+</div>
